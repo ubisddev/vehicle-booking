@@ -19,7 +19,7 @@ export default function Navbar({ user }: { user: User | null }) {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="text-lg font-bold hover:text-blue-200">
-            🚗 ระบบขอใช้รถยนต์ราชการ
+            🚗 AI-UBISD Vehicle Intelligent System
           </Link>
           <Link href="/dashboard" className="hover:text-blue-200 text-sm">
             รายการขอใช้รถ
@@ -37,6 +37,9 @@ export default function Navbar({ user }: { user: User | null }) {
               </Link>
               <Link href="/admin/vehicles" className="hover:text-blue-200 text-sm">
                 จัดการรถยนต์
+              </Link>
+              <Link href="/admin/departments" className="hover:text-blue-200 text-sm">
+                จัดการกลุ่มงาน
               </Link>
             </>
           )}

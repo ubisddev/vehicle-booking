@@ -4,14 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { User, Department, Role } from "@/types";
-
-const departments: Department[] = [
-  "ฝ่ายบริหารทั่วไป",
-  "กลุ่มงานพัฒนาฝีมือแรงงาน",
-  "กลุ่มงานมาตรฐานฝีมือแรงงานและรับรองความรู้ความสามารถ",
-  "กลุ่มงานแผนงานและสารสนเทศ",
-];
+import { User, Role } from "@/types";
 
 const roles: { value: Role; label: string }[] = [
   { value: "user", label: "ผู้ใช้ทั่วไป" },
@@ -20,12 +13,13 @@ const roles: { value: Role; label: string }[] = [
   { value: "admin", label: "ผู้ดูแลระบบ" },
 ];
 
-const emptyForm = { email: "", password: "", full_name: "", position: "", department: departments[0] as string, role: "user" as string };
+const emptyForm = { email: "", password: "", full_name: "", position: "", department: "", role: "user" as string };
 
 export default function AdminUsersPage() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [departments, setDepartments] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -38,6 +32,11 @@ export default function AdminUsersPage() {
       if (me.role !== "admin") { router.push("/dashboard"); return; }
       setCurrentUser(me);
       loadUsers();
+      const deptRes = await fetch("/api/departments");
+      if (deptRes.ok) {
+        const depts = await deptRes.json();
+        setDepartments(depts.filter((d: { is_active: boolean }) => d.is_active).map((d: { name: string }) => d.name));
+      }
     }
     load();
   }, [router]);

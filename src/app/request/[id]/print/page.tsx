@@ -22,7 +22,11 @@ export default function PrintPage() {
 
   return (
     <div>
-      <div className="print:hidden bg-gray-100 p-4 text-center sticky top-0 z-10">
+      <div className="print:hidden bg-gray-100 p-4 text-center sticky top-0 z-10 flex items-center justify-center gap-3">
+        <button onClick={() => window.history.back()}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition">
+          ← ย้อนกลับ
+        </button>
         <button onClick={handlePrint}
           className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-lg transition">
           🖨️ พิมพ์เอกสาร A4

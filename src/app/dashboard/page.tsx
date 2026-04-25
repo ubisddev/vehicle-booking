@@ -7,14 +7,7 @@ import * as XLSX from "xlsx";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StatusBadge from "@/components/StatusBadge";
-import { User, VehicleRequest, Department } from "@/types";
-
-const departments: Department[] = [
-  "ฝ่ายบริหารทั่วไป",
-  "กลุ่มงานพัฒนาฝีมือแรงงาน",
-  "กลุ่มงานมาตรฐานฝีมือแรงงานและรับรองความรู้ความสามารถ",
-  "กลุ่มงานแผนงานและสารสนเทศ",
-];
+import { User, VehicleRequest } from "@/types";
 
 function formatDateTime(d: string) {
   return new Date(d).toLocaleString("th-TH", {
@@ -34,6 +27,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [requests, setRequests] = useState<VehicleRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [departments, setDepartments] = useState<string[]>([]);
 
   // Filters
   const [filterName, setFilterName] = useState("");
@@ -52,6 +46,11 @@ export default function DashboardPage() {
       setUser(await meRes.json());
       const reqRes = await fetch("/api/requests");
       if (reqRes.ok) setRequests(await reqRes.json());
+      const deptRes = await fetch("/api/departments");
+      if (deptRes.ok) {
+        const depts = await deptRes.json();
+        setDepartments(depts.filter((d: { is_active: boolean }) => d.is_active).map((d: { name: string }) => d.name));
+      }
       setLoading(false);
     }
     load();

@@ -1,24 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Department } from "@/types";
-
-const departments: Department[] = [
-  "ฝ่ายบริหารทั่วไป",
-  "กลุ่มงานพัฒนาฝีมือแรงงาน",
-  "กลุ่มงานมาตรฐานฝีมือแรงงานและรับรองความรู้ความสามารถ",
-  "กลุ่มงานแผนงานและสารสนเทศ",
-];
+import Footer from "@/components/Footer";
 
 export default function RegisterPage() {
+  const [departments, setDepartments] = useState<string[]>([]);
   const [form, setForm] = useState({
     email: "", password: "", confirm_password: "",
-    full_name: "", position: "", department: departments[0] as string,
+    full_name: "", position: "", department: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/departments").then(r => r.json()).then(data => {
+      const active = data.filter((d: { is_active: boolean }) => d.is_active).map((d: { name: string }) => d.name);
+      setDepartments(active);
+      if (active.length > 0) setForm(f => ({ ...f, department: active[0] }));
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,12 +77,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-800 to-blue-950 py-8">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-800 to-blue-950">
+      <div className="flex-1 flex items-center justify-center py-8">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-6">
           <div className="text-5xl mb-3">🚗</div>
           <h1 className="text-2xl font-bold text-blue-800">สมัครผู้ใช้งาน</h1>
-          <p className="text-gray-500 mt-1">ระบบขอใช้รถยนต์ราชการ สพร.7 อุบลราชธานี</p>
+          <p className="text-gray-500 mt-1">AI-UBISD Vehicle Intelligent System สพร.7 อุบลราชธานี</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -141,6 +144,7 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
