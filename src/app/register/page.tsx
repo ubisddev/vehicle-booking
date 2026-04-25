@@ -79,69 +79,70 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-800 to-blue-950">
       <div className="flex-1 flex items-center justify-center py-8">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <div className="text-center mb-6">
-          <div className="text-5xl mb-3">🚗</div>
-          <h1 className="text-2xl font-bold text-blue-800">สมัครผู้ใช้งาน</h1>
-          <p className="text-gray-500 mt-1">AI-UBISD Vehicle Intelligent System สพร.7 อุบลราชธานี</p>
-        </div>
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="text-center mb-6">
+            <div className="text-5xl mb-3">🚗</div>
+            <h1 className="text-2xl font-bold text-blue-800">สมัครผู้ใช้งาน</h1>
+            <p className="text-gray-500 mt-1">AI-UBISD Vehicle Intelligent System สพร.7 อุบลราชธานี</p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
 
-          <div>
-            <label htmlFor="reg_name" className="block text-sm font-medium text-gray-700 mb-1">ชื่อ-สกุล</label>
-            <input id="reg_name" type="text" value={form.full_name}
-              onChange={e => setForm({ ...form, full_name: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="เช่น นายสมชาย ใจดี" required />
-          </div>
-          <div>
-            <label htmlFor="reg_email" className="block text-sm font-medium text-gray-700 mb-1">อีเมล</label>
-            <input id="reg_email" type="email" value={form.email}
-              onChange={e => setForm({ ...form, email: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="email@example.com" required />
-          </div>
-          <div>
-            <label htmlFor="reg_pos" className="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง</label>
-            <input id="reg_pos" type="text" value={form.position}
-              onChange={e => setForm({ ...form, position: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="เช่น นักวิชาการพัฒนาฝีมือแรงงาน" required />
-          </div>
-          <div>
-            <label htmlFor="reg_dept" className="block text-sm font-medium text-gray-700 mb-1">กลุ่มงาน</label>
-            <select id="reg_dept" value={form.department}
-              onChange={e => setForm({ ...form, department: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none">
-              {departments.map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="reg_pass" className="block text-sm font-medium text-gray-700 mb-1">รหัสผ่าน</label>
-            <input id="reg_pass" type="password" value={form.password}
-              onChange={e => setForm({ ...form, password: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="อย่างน้อย 6 ตัวอักษร" required />
-          </div>
-          <div>
-            <label htmlFor="reg_pass2" className="block text-sm font-medium text-gray-700 mb-1">ยืนยันรหัสผ่าน</label>
-            <input id="reg_pass2" type="password" value={form.confirm_password}
-              onChange={e => setForm({ ...form, confirm_password: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="กรอกรหัสผ่านอีกครั้ง" required />
-          </div>
-          <button type="submit" disabled={loading}
-            className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2.5 rounded-lg transition disabled:opacity-50">
-            {loading ? "กำลังสมัคร..." : "สมัครผู้ใช้งาน"}
-          </button>
-        </form>
+            <div>
+              <label htmlFor="reg_name" className="block text-sm font-medium text-gray-700 mb-1">ชื่อ-สกุล</label>
+              <input id="reg_name" type="text" value={form.full_name}
+                onChange={e => setForm({ ...form, full_name: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="เช่น นายสมชาย ใจดี" required />
+            </div>
+            <div>
+              <label htmlFor="reg_email" className="block text-sm font-medium text-gray-700 mb-1">อีเมล</label>
+              <input id="reg_email" type="email" value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="email@example.com" required />
+            </div>
+            <div>
+              <label htmlFor="reg_pos" className="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง</label>
+              <input id="reg_pos" type="text" value={form.position}
+                onChange={e => setForm({ ...form, position: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="เช่น นักวิชาการพัฒนาฝีมือแรงงาน" required />
+            </div>
+            <div>
+              <label htmlFor="reg_dept" className="block text-sm font-medium text-gray-700 mb-1">กลุ่มงาน</label>
+              <select id="reg_dept" value={form.department}
+                onChange={e => setForm({ ...form, department: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none">
+                {departments.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="reg_pass" className="block text-sm font-medium text-gray-700 mb-1">รหัสผ่าน</label>
+              <input id="reg_pass" type="password" value={form.password}
+                onChange={e => setForm({ ...form, password: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="อย่างน้อย 6 ตัวอักษร" required />
+            </div>
+            <div>
+              <label htmlFor="reg_pass2" className="block text-sm font-medium text-gray-700 mb-1">ยืนยันรหัสผ่าน</label>
+              <input id="reg_pass2" type="password" value={form.confirm_password}
+                onChange={e => setForm({ ...form, confirm_password: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="กรอกรหัสผ่านอีกครั้ง" required />
+            </div>
+            <button type="submit" disabled={loading}
+              className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2.5 rounded-lg transition disabled:opacity-50">
+              {loading ? "กำลังสมัคร..." : "สมัครผู้ใช้งาน"}
+            </button>
+          </form>
 
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-500">
-            มีบัญชีแล้ว? <Link href="/login" className="text-blue-600 hover:underline">เข้าสู่ระบบ</Link>
-          </p>
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-500">
+              มีบัญชีแล้ว? <Link href="/login" className="text-blue-600 hover:underline">เข้าสู่ระบบ</Link>
+            </p>
+          </div>
         </div>
       </div>
       <Footer />
