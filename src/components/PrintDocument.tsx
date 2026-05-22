@@ -14,9 +14,8 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
     <div className="print-doc w-[210mm] min-h-[297mm] mx-auto bg-white text-black p-[12mm] text-[11px] leading-relaxed" id="print-area">
       {/* หัวเอกสาร */}
       <div className="text-center mb-3">
-        <p className="text-[14px] font-bold">แบบขอใช้รถยนต์ราชการ</p>
-        <p className="text-[12px]">AI-UBISD Vehicle Intelligent System</p>
-        <p className="text-[11px]">สถาบันพัฒนาฝีมือแรงงาน 7 อุบลราชธานี</p>
+        <p className="text-[14px] font-bold">แบบฟอร์มขอใช้รถยนต์ราชการ</p>
+        <p className="text-[12px]">สถาบันพัฒนาฝีมือแรงงาน 7 อุบลราชธานี</p>
       </div>
 
       <p className="text-right mb-2">วันที่ขอ: {fmtDate(request.request_date)}</p>

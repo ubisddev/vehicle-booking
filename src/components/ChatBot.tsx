@@ -10,7 +10,7 @@ interface Message {
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "bot", text: "สวัสดีครับ 🙏 ผมเป็นผู้ช่วย AI-UBISD ระบบขอใช้รถยนต์ราชการอัจฉริยะ ถามอะไรได้เลยครับ" },
+    { role: "bot", text: "สวัสดีครับ 🙏 ผมเป็นผู้ช่วย AI ระบบขอใช้รถยนต์ครับ ถามอะไรได้เลยนะ เช่น \"รถว่างวันนี้ไหม\" หรือ \"ช่วยอะไรได้บ้าง\" 😊" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

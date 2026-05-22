@@ -59,7 +59,7 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
     handler: async () => {
       const sb = getServiceSupabase();
       const { data: allVehicles } = await sb.from("vehicles").select("*").order("brand");
-      if (!allVehicles || allVehicles.length === 0) return { matched: true, response: "ไม่มีรถในระบบ" };
+      if (!allVehicles || allVehicles.length === 0) return { matched: true, response: "ตอนนี้ยังไม่มีรถในระบบเลยครับ ลองติดต่อ admin ให้เพิ่มข้อมูลก่อนนะ" };
 
       const active = allVehicles.filter(v => v.is_active);
       const inactive = allVehicles.filter(v => !v.is_active);
@@ -68,7 +68,7 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
         return `${i + 1}. ${v.brand} ${v.model} (${v.plate_number}) - ${v.vehicle_type} ${v.is_active ? "🟢 ใช้งานได้" : "🔴 ไม่ใช้งาน"}`;
       }).join("\n");
 
-      return { matched: true, response: `🚗 รถทั้งหมด ${allVehicles.length} คัน (ใช้งานได้ ${active.length} / ไม่ใช้งาน ${inactive.length}):\n${list}` };
+      return { matched: true, response: `🚗 ตอนนี้มีรถทั้งหมด ${allVehicles.length} คันครับ (พร้อมใช้ ${active.length} / ไม่ใช้งาน ${inactive.length}):\n${list}` };
     },
   },
 
@@ -78,9 +78,9 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
     handler: async () => {
       const sb = getServiceSupabase();
       const { data } = await sb.from("vehicles").select("*").eq("is_active", true).order("brand");
-      if (!data || data.length === 0) return { matched: true, response: "ไม่มีรถในระบบ" };
+      if (!data || data.length === 0) return { matched: true, response: "🚗 ตอนนี้ยังไม่มีรถในระบบเลยครับ" };
       const list = data.map((v, i) => `${i + 1}. ${v.brand} ${v.model} (${v.plate_number}) - ${v.vehicle_type}`).join("\n");
-      return { matched: true, response: `🚗 รถที่ใช้งานได้:\n${list}` };
+      return { matched: true, response: `🚗 รถที่พร้อมใช้งานมีดังนี้ครับ:\n${list}` };
     },
   },
 
@@ -146,7 +146,7 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
         return `${i + 1}. ${v.brand} ${v.model} (${v.plate_number}) — 🟢 ว่าง`;
       }).join("\n");
 
-      return { matched: true, response: `🚗 สถานะรถ${dateLabel} (ว่าง ${availableCount} / ถูกจอง ${bookedCount}):\n${list}` };
+      return { matched: true, response: `🚗 สถานะรถ${dateLabel}นะครับ (ว่าง ${availableCount} / ถูกจอง ${bookedCount}):\n${list}` };
     },
   },
 
@@ -161,9 +161,9 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
         .lt("departure_datetime", end).gt("return_datetime", start)
         .order("departure_datetime");
 
-      if (!data || data.length === 0) return { matched: true, response: "📋 วันนี้ไม่มีคำขอใช้รถครับ" };
+      if (!data || data.length === 0) return { matched: true, response: "📋 วันนี้ไม่มีใครขอใช้รถเลยครับ ว่างๆ" };
       const list = data.map((r, i) => `${i + 1}. ${r.requester?.full_name || "ไม่ระบุ"} → ${r.destination} (${statusTh[r.status]})`).join("\n");
-      return { matched: true, response: `📋 คำขอใช้รถวันนี้ ${data.length} รายการ:\n${list}` };
+      return { matched: true, response: `📋 วันนี้มีคำขอ ${data.length} รายการครับ:\n${list}` };
     },
   },
 
@@ -176,11 +176,11 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
       const { data } = await sb.from("vehicle_requests").select("status")
         .gte("request_date", start.split("T")[0]).lt("request_date", end.split("T")[0]);
 
-      if (!data) return { matched: true, response: "ไม่สามารถดึงข้อมูลได้" };
+      if (!data) return { matched: true, response: "ขอโทษครับ ดึงข้อมูลไม่ได้ ลองใหม่อีกทีนะ" };
       const approved = data.filter(r => r.status === "approved").length;
       const pending = data.filter(r => r.status === "pending" || r.status === "supervisor_approved").length;
       const rejected = data.filter(r => r.status === "rejected").length;
-      return { matched: true, response: `📊 สรุปเดือนนี้:\n• ทั้งหมด ${data.length} รายการ\n• อนุมัติแล้ว ${approved}\n• รออนุมัติ ${pending}\n• ไม่อนุมัติ ${rejected}` };
+      return { matched: true, response: `📊 สรุปเดือนนี้ครับ:\n• ทั้งหมด ${data.length} รายการ\n• อนุมัติแล้ว ${approved} ✅\n• รออนุมัติ ${pending} ⏳\n• ไม่อนุมัติ ${rejected} ❌` };
     },
   },
 
@@ -193,9 +193,9 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
       const { data } = await sb.from("vehicle_requests").select("status")
         .gte("request_date", start.split("T")[0]).lt("request_date", end.split("T")[0]);
 
-      if (!data) return { matched: true, response: "ไม่สามารถดึงข้อมูลได้" };
+      if (!data) return { matched: true, response: "ขอโทษครับ ดึงข้อมูลไม่ได้ ลองใหม่อีกทีนะ" };
       const approved = data.filter(r => r.status === "approved").length;
-      return { matched: true, response: `📊 สรุปปีนี้: ทั้งหมด ${data.length} รายการ (อนุมัติ ${approved})` };
+      return { matched: true, response: `📊 สรุปปีนี้ครับ: ทั้งหมด ${data.length} รายการ (อนุมัติ ${approved} ✅) เยอะเหมือนกันนะ` };
     },
   },
 
@@ -249,9 +249,9 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
       const { data } = await sb.from("vehicle_requests")
         .select("*").eq("requester_id", userId).order("created_at", { ascending: false }).limit(5);
 
-      if (!data || data.length === 0) return { matched: true, response: "คุณยังไม่มีคำขอใช้รถ" };
+      if (!data || data.length === 0) return { matched: true, response: "ยังไม่มีคำขอของคุณในระบบเลยครับ ลองกดขอใช้รถดูนะ 😊" };
       const list = data.map((r, i) => `${i + 1}. ${fmtDate(r.request_date)} → ${r.destination} (${statusTh[r.status]})`).join("\n");
-      return { matched: true, response: `📋 คำขอล่าสุดของคุณ:\n${list}` };
+      return { matched: true, response: `📋 คำขอล่าสุดของคุณครับ:\n${list}` };
     },
   },
 
@@ -265,9 +265,9 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
         .in("status", ["pending", "supervisor_approved"])
         .order("created_at", { ascending: false });
 
-      if (!data || data.length === 0) return { matched: true, response: "✅ ไม่มีคำขอรออนุมัติ" };
+      if (!data || data.length === 0) return { matched: true, response: "✅ ตอนนี้ไม่มีคำขอค้างรออนุมัติเลยครับ เคลียร์หมดแล้ว 👍" };
       const list = data.map((r, i) => `${i + 1}. ${r.requester?.full_name || "-"} → ${r.destination} (${statusTh[r.status]})`).join("\n");
-      return { matched: true, response: `⏳ คำขอรออนุมัติ ${data.length} รายการ:\n${list}` };
+      return { matched: true, response: `⏳ มีคำขอรออนุมัติ ${data.length} รายการครับ:\n${list}` };
     },
   },
 
@@ -350,7 +350,7 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
 
   // --- ช่วยอะไรได้บ้าง ---
   {
-    keywords: [["ช่วย", "อะไร"], ["ทำอะไร", "ได้"], ["ถาม", "อะไร", "ได้"], ["คำสั่ง"], ["help"], ["เมนู"]],
+    keywords: [["ช่วย", "อะไร"], ["ทำอะไร", "ได้"], ["ถาม", "อะไร", "ได้"], ["คำสั่ง"], ["help"], ["เมนู"], ["ใช้ยังไง"], ["วิธีใช้"]],
     handler: async () => {
       return {
         matched: true,
@@ -359,11 +359,53 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
     },
   },
 
+  // --- วันนี้วันอะไร ---
+  {
+    keywords: [["วันนี้", "วันอะไร"], ["วันนี้", "วันที่"], ["วันที่เท่าไหร่"], ["วันนี้", "ที่เท่าไหร่"]],
+    handler: async () => {
+      const now = new Date();
+      const thai = now.toLocaleDateString("th-TH", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      return { matched: true, response: `📅 วันนี้คือ ${thai} (พ.ศ. ${now.getFullYear() + 543})` };
+    },
+  },
+
+  // --- ขอใช้รถยังไง ---
+  {
+    keywords: [["ขอ", "ยังไง"], ["ขอ", "อย่างไร"], ["วิธี", "ขอ"], ["ขั้นตอน", "ขอ"], ["ขอรถ", "ยังไง"]],
+    handler: async () => {
+      return { matched: true, response: `📝 วิธีขอใช้รถ:\n1. กดเมนู "ขอใช้รถ"\n2. กรอกวันเวลาออก-กลับ สถานที่ วัตถุประสงค์\n3. ลงลายเซ็น แล้วกดส่งคำขอ\n4. รอผู้บังคับบัญชาขั้นต้นอนุมัติ\n5. รอผู้อนุมัติอนุมัติขั้นสุดท้าย\n6. อนุมัติแล้วสามารถพิมพ์เอกสาร A4 ได้` };
+    },
+  },
+
+  // --- ใครเป็นผู้อนุมัติ ---
+  {
+    keywords: [["ใคร", "อนุมัติ"], ["ผู้อนุมัติ", "ใคร"], ["ใคร", "approve"]],
+    handler: async () => {
+      const sb = getServiceSupabase();
+      const { data } = await sb.from("users").select("full_name, position").eq("role", "approver").eq("is_approved", true);
+      if (!data || data.length === 0) return { matched: true, response: "ยังไม่มีผู้อนุมัติในระบบ" };
+      const list = data.map((u, i) => `${i + 1}. ${u.full_name} (${u.position})`).join("\n");
+      return { matched: true, response: `👤 ผู้อนุมัติในระบบ:\n${list}` };
+    },
+  },
+
+  // --- ใครเป็นผู้บังคับบัญชา ---
+  {
+    keywords: [["ผู้บังคับบัญชา", "ใคร"], ["supervisor", "ใคร"], ["หัวหน้า", "ใคร"]],
+    handler: async () => {
+      const sb = getServiceSupabase();
+      const { data } = await sb.from("users").select("full_name, position").eq("role", "supervisor").eq("is_approved", true);
+      if (!data || data.length === 0) return { matched: true, response: "ยังไม่มีผู้บังคับบัญชาขั้นต้นในระบบ" };
+      const list = data.map((u, i) => `${i + 1}. ${u.full_name} (${u.position})`).join("\n");
+      return { matched: true, response: `👤 ผู้บังคับบัญชาขั้นต้นในระบบ:\n${list}` };
+    },
+  },
+
   // --- ทักทาย ---
   {
     keywords: [["สวัสดี"], ["หวัดดี"], ["ดีครับ"], ["ดีค่ะ"], ["hello"], ["hi"]],
     handler: async () => {
-      return { matched: true, response: "สวัสดีครับ 🙏 ผมเป็นผู้ช่วย AI-UBISD ระบบขอใช้รถยนต์ราชการอัจฉริยะ ถามอะไรได้เลยครับ พิมพ์ \"ช่วยอะไรได้บ้าง\" เพื่อดูตัวอย่างคำถาม" };
+      return { matched: true, response: "สวัสดีครับ 🙏 ยินดีต้อนรับเข้าสู่ระบบขอใช้รถยนต์ราชการครับ ผมช่วยอะไรได้บ้าง? ลองพิมพ์ \"ช่วยอะไรได้บ้าง\" เพื่อดูตัวอย่างคำถามนะครับ" };
     },
   },
 
@@ -371,7 +413,7 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
   {
     keywords: [["ขอบคุณ"], ["ขอบใจ"], ["thanks"], ["thank"]],
     handler: async () => {
-      return { matched: true, response: "ยินดีครับ 🙏 ถ้ามีอะไรถามเพิ่มได้เลย" };
+      return { matched: true, response: "ยินดีเสมอครับ 🙏😊 ถ้ามีอะไรถามเพิ่มได้ตลอดนะ" };
     },
   },
 ];
@@ -423,20 +465,28 @@ ${pendingRequests.map(r => `- ${(r.requester as unknown as { full_name: string }
 async function askLLM(userMessage: string): Promise<string> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return "🤔 ขอโทษครับ ไม่เข้าใจคำถาม ลองพิมพ์ \"ช่วยอะไรได้บ้าง\" เพื่อดูตัวอย่างคำถามที่ถามได้ครับ";
+    return "🤔 อืม... ผมไม่ค่อยเข้าใจคำถามนี้ครับ ลองพิมพ์ \"ช่วยอะไรได้บ้าง\" เพื่อดูตัวอย่างคำถามที่ถามได้นะครับ 😊";
   }
 
   try {
     const groq = createGroq({ apiKey });
     const dbContext = await gatherDbContext();
+    const now = new Date();
+    const thaiDate = now.toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric", weekday: "long" });
 
     const { text } = await generateText({
       model: groq("llama-3.1-8b-instant"),
-      system: `คุณเป็นผู้ช่วย AI-UBISD Vehicle Intelligent System ระบบขอใช้รถยนต์ราชการอัจฉริยะ สถาบันพัฒนาฝีมือแรงงาน 7 อุบลราชธานี
-ตอบเป็นภาษาไทย สั้น กระชับ ใช้ emoji ให้เหมาะสม
-ตอบเฉพาะเรื่องที่เกี่ยวกับระบบขอใช้รถเท่านั้น ถ้าถามเรื่องอื่นให้บอกว่าตอบได้เฉพาะเรื่องระบบขอใช้รถ
-ใช้ข้อมูลด้านล่างในการตอบ:
+      system: `คุณชื่อ "ผู้ช่วย AI-UBISD" เป็นแชทบอทของระบบขอใช้รถยนต์ราชการอัจฉริยะ สถาบันพัฒนาฝีมือแรงงาน 7 อุบลราชธานี
 
+กฎสำคัญ:
+- ตอบเป็นภาษาไทยเท่านั้น สั้น กระชับ เป็นกันเอง ใช้ emoji ให้เหมาะสม
+- วันนี้คือ ${thaiDate} (พ.ศ. ${now.getFullYear() + 543})
+- ใช้ปี พ.ศ. เสมอ (เช่น 2569 ไม่ใช่ 2026)
+- ตอบเฉพาะเรื่องระบบขอใช้รถ ถ้าถามเรื่องอื่นให้บอกสั้นๆ ว่า "ผมตอบได้เฉพาะเรื่องระบบขอใช้รถครับ"
+- ถ้าไม่แน่ใจคำตอบ ให้แนะนำว่า "ลองพิมพ์ 'ช่วยอะไรได้บ้าง' เพื่อดูตัวอย่างคำถามครับ"
+- อย่าแต่งข้อมูลเอง ใช้เฉพาะข้อมูลที่ให้ด้านล่าง
+
+ข้อมูลระบบ ณ ตอนนี้:
 ${dbContext}`,
       prompt: userMessage,
       maxOutputTokens: 500,
@@ -445,7 +495,7 @@ ${dbContext}`,
     return text || "ขอโทษครับ ไม่สามารถตอบได้ในขณะนี้";
   } catch (error) {
     console.error("LLM error:", error);
-    return "🤔 ขอโทษครับ ไม่เข้าใจคำถาม ลองพิมพ์ \"ช่วยอะไรได้บ้าง\" เพื่อดูตัวอย่างคำถามที่ถามได้ครับ";
+    return "🤔 อืม... ผมไม่ค่อยเข้าใจคำถามนี้ครับ ลองพิมพ์ \"ช่วยอะไรได้บ้าง\" ดูนะ 😊";
   }
 }
 
