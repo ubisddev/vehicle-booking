@@ -34,7 +34,11 @@ export default function NewRequestPage() {
     const res = await fetch("/api/requests", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        departure_datetime: form.departure_datetime ? form.departure_datetime + ":00+07:00" : "",
+        return_datetime: form.return_datetime ? form.return_datetime + ":00+07:00" : "",
+      }),
     });
 
     if (res.ok) {
