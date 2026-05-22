@@ -227,6 +227,60 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
     },
   },
 
+  // --- คำขอเดือนที่ระบุ (เช่น เดือนเมษายน 2569) ---
+  {
+    keywords: [["สรุป", "เดือน"], ["รายการ", "เดือน"], ["คำขอ", "เดือน"], ["ขอใช้", "เดือน"]],
+    handler: async (msg) => {
+      const thaiMonthMap: Record<string, number> = {
+        "มกราคม": 0, "ม.ค.": 0, "มค": 0,
+        "กุมภาพันธ์": 1, "ก.พ.": 1, "กพ": 1,
+        "มีนาคม": 2, "มี.ค.": 2, "มีค": 2,
+        "เมษายน": 3, "เม.ย.": 3, "เมย": 3,
+        "พฤษภาคม": 4, "พ.ค.": 4, "พค": 4,
+        "มิถุนายน": 5, "มิ.ย.": 5, "มิย": 5,
+        "กรกฎาคม": 6, "ก.ค.": 6, "กค": 6,
+        "สิงหาคม": 7, "ส.ค.": 7, "สค": 7,
+        "กันยายน": 8, "ก.ย.": 8, "กย": 8,
+        "ตุลาคม": 9, "ต.ค.": 9, "ตค": 9,
+        "พฤศจิกายน": 10, "พ.ย.": 10, "พย": 10,
+        "ธันวาคม": 11, "ธ.ค.": 11, "ธค": 11,
+      };
+
+      let month = -1;
+      let year = new Date().getFullYear();
+
+      // จับชื่อเดือนภาษาไทย
+      for (const [name, idx] of Object.entries(thaiMonthMap)) {
+        if (msg.includes(name)) { month = idx; break; }
+      }
+
+      // จับปี
+      const yearMatch = msg.match(/(\d{4})/);
+      if (yearMatch) {
+        year = parseInt(yearMatch[1]);
+        if (year > 2500) year -= 543;
+      }
+
+      if (month === -1) return { matched: true, response: "กรุณาระบุเดือน เช่น \"สรุปรายการเดือนเมษายน 2569\" ครับ" };
+
+      const start = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+      const endDate = new Date(year, month + 1, 1);
+      const end = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, "0")}-01`;
+      const thaiYear = year + 543;
+      const monthName = new Date(year, month, 1).toLocaleDateString("th-TH", { month: "long" });
+
+      const sb = getServiceSupabase();
+      const { data } = await sb.from("vehicle_requests").select("status, destination, requester:requester_id(full_name)")
+        .gte("request_date", start).lt("request_date", end);
+
+      if (!data || data.length === 0) return { matched: true, response: `📊 เดือน${monthName} พ.ศ. ${thaiYear} ยังไม่มีรายการขอใช้รถเลยครับ` };
+      const approved = data.filter(r => r.status === "approved").length;
+      const pending = data.filter(r => r.status === "pending" || r.status === "supervisor_approved").length;
+      const rejected = data.filter(r => r.status === "rejected").length;
+      return { matched: true, response: `📊 สรุปเดือน${monthName} พ.ศ. ${thaiYear} ครับ:\n• ทั้งหมด ${data.length} รายการ\n• อนุมัติแล้ว ${approved} ✅\n• รออนุมัติ ${pending} ⏳\n• ไม่อนุมัติ ${rejected} ❌` };
+    },
+  },
+
   // --- คำขอปีที่ระบุ (เช่น ปี 2569, ปี 2026) ---
   {
     keywords: [["สรุป", "ปี"], ["รายการ", "ปี"], ["คำขอ", "ปี"], ["ขอใช้", "ปี"]],
