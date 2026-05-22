@@ -6,7 +6,7 @@ function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
 }
 function fmtDateTime(d: string) {
-  return new Date(d).toLocaleString("th-TH", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  return new Date(d).toLocaleString("th-TH", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" });
 }
 
 export default function PrintDocument({ request }: { request: VehicleRequest }) {

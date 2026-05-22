@@ -39,7 +39,7 @@ function fmtDate(d: string) {
 }
 
 function fmtDateTime(d: string) {
-  return new Date(d).toLocaleString("th-TH", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  return new Date(d).toLocaleString("th-TH", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok" });
 }
 
 const statusTh: Record<string, string> = {

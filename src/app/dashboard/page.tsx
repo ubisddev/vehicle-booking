@@ -11,7 +11,7 @@ import { User, VehicleRequest } from "@/types";
 
 function formatDateTime(d: string) {
   return new Date(d).toLocaleString("th-TH", {
-    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Bangkok",
   });
 }
 
