@@ -90,8 +90,27 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
     handler: async (msg) => {
       const sb = getServiceSupabase();
 
+      // Thai month names mapping
+      const thaiMonths: Record<string, number> = {
+        "มกราคม": 0, "ม.ค.": 0, "มค": 0,
+        "กุมภาพันธ์": 1, "ก.พ.": 1, "กพ": 1,
+        "มีนาคม": 2, "มี.ค.": 2, "มีค": 2,
+        "เมษายน": 3, "เม.ย.": 3, "เมย": 3,
+        "พฤษภาคม": 4, "พ.ค.": 4, "พค": 4,
+        "มิถุนายน": 5, "มิ.ย.": 5, "มิย": 5,
+        "กรกฎาคม": 6, "ก.ค.": 6, "กค": 6,
+        "สิงหาคม": 7, "ส.ค.": 7, "สค": 7,
+        "กันยายน": 8, "ก.ย.": 8, "กย": 8,
+        "ตุลาคม": 9, "ต.ค.": 9, "ตค": 9,
+        "พฤศจิกายน": 10, "พ.ย.": 10, "พย": 10,
+        "ธันวาคม": 11, "ธ.ค.": 11, "ธค": 11,
+      };
+
       // เช็คว่ามีวันที่ระบุไหม
       const dateMatch = msg.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
+      // จับวันที่แบบภาษาไทย เช่น "28 เมษายน 2569" หรือ "28 เม.ย. 2569"
+      const thaiDateMatch = msg.match(/(\d{1,2})\s*(มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม|ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s*(\d{2,4})?/);
+
       let targetStart: string;
       let targetEnd: string;
       let dateLabel: string;
@@ -102,6 +121,15 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
         targetStart = tmr.toISOString();
         targetEnd = new Date(tmr.getFullYear(), tmr.getMonth(), tmr.getDate() + 1).toISOString();
         dateLabel = "พรุ่งนี้";
+      } else if (thaiDateMatch) {
+        const day = parseInt(thaiDateMatch[1]);
+        const month = thaiMonths[thaiDateMatch[2]] ?? 0;
+        let year = thaiDateMatch[3] ? parseInt(thaiDateMatch[3]) : new Date().getFullYear() + 543;
+        if (year > 2500) year -= 543;
+        if (year < 100) year += 2000;
+        targetStart = new Date(year, month, day).toISOString();
+        targetEnd = new Date(year, month, day + 1).toISOString();
+        dateLabel = new Date(year, month, day).toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" });
       } else if (dateMatch) {
         const day = parseInt(dateMatch[1]);
         const month = parseInt(dateMatch[2]) - 1;
@@ -196,6 +224,33 @@ const handlers: { keywords: string[][]; handler: Handler }[] = [
       if (!data) return { matched: true, response: "ขอโทษครับ ดึงข้อมูลไม่ได้ ลองใหม่อีกทีนะ" };
       const approved = data.filter(r => r.status === "approved").length;
       return { matched: true, response: `📊 สรุปปีนี้ครับ: ทั้งหมด ${data.length} รายการ (อนุมัติ ${approved} ✅) เยอะเหมือนกันนะ` };
+    },
+  },
+
+  // --- คำขอปีที่ระบุ (เช่น ปี 2569, ปี 2026) ---
+  {
+    keywords: [["สรุป", "ปี"], ["รายการ", "ปี"], ["คำขอ", "ปี"], ["ขอใช้", "ปี"]],
+    handler: async (msg) => {
+      const yearMatch = msg.match(/ปี\s*(?:พ\.?ศ\.?\s*)?(\d{4})/i) || msg.match(/(\d{4})/);
+      if (!yearMatch) return { matched: true, response: "กรุณาระบุปี เช่น \"สรุปรายการปี 2569\" ครับ" };
+
+      let year = parseInt(yearMatch[1]);
+      if (year > 2500) year -= 543;
+      if (year < 100) year += 2000;
+
+      const start = `${year}-01-01`;
+      const end = `${year + 1}-01-01`;
+      const thaiYear = year + 543;
+
+      const sb = getServiceSupabase();
+      const { data } = await sb.from("vehicle_requests").select("status")
+        .gte("request_date", start).lt("request_date", end);
+
+      if (!data || data.length === 0) return { matched: true, response: `📊 ปี พ.ศ. ${thaiYear} ยังไม่มีรายการขอใช้รถเลยครับ` };
+      const approved = data.filter(r => r.status === "approved").length;
+      const pending = data.filter(r => r.status === "pending" || r.status === "supervisor_approved").length;
+      const rejected = data.filter(r => r.status === "rejected").length;
+      return { matched: true, response: `📊 สรุปปี พ.ศ. ${thaiYear} ครับ:\n• ทั้งหมด ${data.length} รายการ\n• อนุมัติแล้ว ${approved} ✅\n• รออนุมัติ ${pending} ⏳\n• ไม่อนุมัติ ${rejected} ❌` };
     },
   },
 
@@ -523,7 +578,7 @@ export async function POST(request: Request) {
   }
 
   // 2. ถ้ามีวันที่ในข้อความ ให้เข้า handler สถานะรถอัตโนมัติ
-  const hasDate = /\d{1,2}[\/\-]\d{1,2}/.test(msg);
+  const hasDate = /\d{1,2}[\/\-]\d{1,2}/.test(msg) || /\d{1,2}\s*(มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม|ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)/.test(msg);
   if (hasDate) {
     const vehicleHandler = handlers.find(h => h.keywords.some(kw => kw.includes("รถ") && kw.includes("ว่าง")));
     if (vehicleHandler) {
