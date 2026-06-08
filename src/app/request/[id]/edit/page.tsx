@@ -21,6 +21,7 @@ export default function EditRequestPage() {
 
   const [user, setUser] = useState<User | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -59,6 +60,9 @@ export default function EditRequestPage() {
 
       const vehRes = await fetch("/api/vehicles");
       if (vehRes.ok) setVehicles((await vehRes.json()).filter((v: Vehicle) => v.is_active));
+
+      const usersRes = await fetch("/api/users");
+      if (usersRes.ok) setUsers((await usersRes.json()).filter((u: User) => u.is_approved));
 
       setLoading(false);
     }
@@ -142,10 +146,14 @@ export default function EditRequestPage() {
           </div>
           <div>
             <label htmlFor="driver" className="block text-sm font-medium text-gray-700 mb-1">ผู้ขับที่อนุมัติ</label>
-            <input id="driver" type="text" value={form.approved_driver_name}
+            <select id="driver" value={form.approved_driver_name}
               onChange={e => setForm({ ...form, approved_driver_name: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="ชื่อผู้ขับรถ" />
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none">
+              <option value="">-- ไม่ระบุ --</option>
+              {users.map(u => (
+                <option key={u.id} value={u.full_name}>{u.full_name} ({u.position})</option>
+              ))}
+            </select>
           </div>
           <div className="flex gap-3">
             <button type="submit" disabled={saving}

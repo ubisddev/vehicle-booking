@@ -23,6 +23,7 @@ export default function RequestDetailPage() {
   const [user, setUser] = useState<User | null>(null);
   const [request, setRequest] = useState<VehicleRequest | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [comment, setComment] = useState("");
@@ -41,6 +42,9 @@ export default function RequestDetailPage() {
 
       const vehRes = await fetch("/api/vehicles");
       if (vehRes.ok) setVehicles((await vehRes.json()).filter((v: Vehicle) => v.is_active));
+
+      const usersRes = await fetch("/api/users");
+      if (usersRes.ok) setUsers((await usersRes.json()).filter((u: User) => u.is_approved));
 
       setLoading(false);
     }
@@ -186,8 +190,19 @@ export default function RequestDetailPage() {
                 </div>
                 <div>
                   <label htmlFor="driver" className="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้ขับ</label>
-                  <input id="driver" type="text" value={driverName} onChange={(e) => setDriverName(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none" placeholder="ชื่อผู้ขับรถ" />
+                  <select id="driver" value={driverName} onChange={(e) => setDriverName(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none">
+                    <option value="">-- เลือกผู้ขับ --</option>
+                    {users.map(u => (
+                      <option key={u.id} value={u.full_name}>{u.full_name} ({u.position})</option>
+                    ))}
+                    <option value="__custom__">ระบุชื่ออื่น...</option>
+                  </select>
+                  {driverName === "__custom__" && (
+                    <input type="text" placeholder="พิมพ์ชื่อผู้ขับ"
+                      onChange={e => setDriverName(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none mt-2" />
+                  )}
                 </div>
               </>
             )}
