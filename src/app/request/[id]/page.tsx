@@ -95,6 +95,12 @@ export default function RequestDetailPage() {
           <h1 className="text-2xl font-bold text-gray-800">รายละเอียดคำขอใช้รถ</h1>
           <div className="flex items-center gap-3">
             <StatusBadge status={request.status} />
+            {(user?.role === "admin" || user?.role === "approver") && (
+              <Link href={`/request/${id}/edit`}
+                className="flex items-center gap-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1.5 rounded-lg text-sm transition">
+                ✏️ แก้ไข
+              </Link>
+            )}
             {request.status === "approved" && (
               <Link href={`/request/${id}/print`}
                 className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm transition">

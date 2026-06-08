@@ -232,6 +232,9 @@ export default function DashboardPage() {
                     <td className="px-4 py-3"><StatusBadge status={r.status} /></td>
                     <td className="px-4 py-3 flex items-center gap-2">
                       <Link href={`/request/${r.id}`} className="text-blue-600 hover:underline text-sm">ดูรายละเอียด</Link>
+                      {(user?.role === "admin" || user?.role === "approver") && (
+                        <Link href={`/request/${r.id}/edit`} className="text-yellow-600 hover:underline text-sm">แก้ไข</Link>
+                      )}
                       {user?.role === "admin" && (
                         <button onClick={() => handleDelete(r.id)} className="text-red-500 hover:underline text-sm">ลบ</button>
                       )}

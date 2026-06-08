@@ -25,6 +25,35 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   return NextResponse.json(data);
 }
 
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user || (user.role !== "admin" && user.role !== "approver")) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { id } = await params;
+  const body = await request.json();
+  const supabase = getServiceSupabase();
+
+  const { data, error } = await supabase
+    .from("vehicle_requests")
+    .update({
+      departure_datetime: body.departure_datetime,
+      return_datetime: body.return_datetime,
+      destination: body.destination,
+      purpose: body.purpose,
+      passengers: body.passengers || null,
+      approved_vehicle_id: body.approved_vehicle_id || null,
+      approved_driver_name: body.approved_driver_name || null,
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
   if (!user || user.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
