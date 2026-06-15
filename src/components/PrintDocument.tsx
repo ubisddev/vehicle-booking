@@ -108,20 +108,20 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
       <table className="w-full border border-black border-collapse mb-2">
         <tbody>
           <tr>
-            <td className="border border-black px-2 py-2 w-[35%] font-semibold bg-gray-50">เวลาออกเดินทางจริง</td>
-            <td className="border border-black px-2 py-2">..........................................................</td>
+            <td className="border border-black px-2 py-3 w-[35%] font-semibold bg-gray-50">เวลาออกเดินทางจริง</td>
+            <td className="border border-black px-2 py-3">..........................................................</td>
           </tr>
           <tr>
-            <td className="border border-black px-2 py-2 font-semibold bg-gray-50">เวลากลับถึงหน่วยงาน</td>
-            <td className="border border-black px-2 py-2">..........................................................</td>
+            <td className="border border-black px-2 py-3 font-semibold bg-gray-50">เวลากลับถึงหน่วยงาน</td>
+            <td className="border border-black px-2 py-3">..........................................................</td>
           </tr>
           <tr>
-            <td className="border border-black px-2 py-2 font-semibold bg-gray-50">เลขกิโลเมตรก่อนเดินทาง</td>
-            <td className="border border-black px-2 py-2">..........................................................</td>
+            <td className="border border-black px-2 py-3 font-semibold bg-gray-50">เลขกิโลเมตรก่อนเดินทาง</td>
+            <td className="border border-black px-2 py-3">..........................................................</td>
           </tr>
           <tr>
-            <td className="border border-black px-2 py-2 font-semibold bg-gray-50">เลขกิโลเมตรหลังเดินทาง</td>
-            <td className="border border-black px-2 py-2">..........................................................</td>
+            <td className="border border-black px-2 py-3 font-semibold bg-gray-50">เลขกิโลเมตรหลังเดินทาง</td>
+            <td className="border border-black px-2 py-3">..........................................................</td>
           </tr>
         </tbody>
       </table>
@@ -176,7 +176,7 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
         </div>
 
         {/* แถว 2: มอบหมายให้ */}
-        <div className="flex flex-wrap items-center gap-x-1 mb-3 text-[11px]">
+        <div className="flex flex-wrap items-center gap-x-1 mb-4 text-[11px]">
           <span>และขอมอบหมายให้</span>
           <span className="border-b border-black inline-block w-[120px]" />
           <span>ตำแหน่ง</span>
@@ -216,12 +216,12 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
           <div className="flex-1 grid grid-cols-2 gap-4 text-[11px]">
             {/* ผู้ขออนุมัติ */}
             <div>
-              <div className="flex items-end gap-1 mb-1">
+              <div className="flex items-end gap-1 mb-3">
                 <span>ชื่อ</span>
                 <span className="border-b border-black flex-1 inline-block" />
                 <span>ผู้ขออนุมัติ</span>
               </div>
-              <div className="flex items-end gap-1 mb-1">
+              <div className="flex items-end gap-1 mb-3">
                 <span>(</span>
                 <span className="border-b border-black flex-1 inline-block" />
                 <span>)</span>
@@ -233,12 +233,12 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
             </div>
             {/* ผู้อนุมัติ */}
             <div>
-              <div className="flex items-end gap-1 mb-1">
+              <div className="flex items-end gap-1 mb-3">
                 <span>ลงชื่อ</span>
                 <span className="border-b border-black flex-1 inline-block" />
                 <span>ผู้อนุมัติ</span>
               </div>
-              <div className="flex items-end gap-1 mb-1">
+              <div className="flex items-end gap-1 mb-3">
                 <span>(</span>
                 <span className="border-b border-black flex-1 inline-block" />
                 <span>)</span>
