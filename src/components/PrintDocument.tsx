@@ -176,12 +176,16 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
         </div>
 
         {/* แถว 2: มอบหมายให้ */}
-        <div className="flex flex-wrap items-center gap-x-1 mb-4 text-[11px]">
-          <span>และขอมอบหมายให้</span>
-          <span className="border-b border-black inline-block w-[120px]" />
-          <span>ตำแหน่ง</span>
-          <span className="border-b border-black inline-block w-[120px]" />
-          <span>เป็นผู้จัดซื้อและตรวจรับน้ำมันในครั้งนี้</span>
+        <div className="mb-4 text-[11px]">
+          <div className="flex flex-wrap items-end gap-x-1 mb-3">
+            <span className="shrink-0">และขอมอบหมายให้</span>
+            <span className="border-b border-black flex-1 inline-block min-w-[120px]" />
+            <span className="shrink-0">ตำแหน่ง</span>
+            <span className="border-b border-black flex-1 inline-block min-w-[120px]" />
+          </div>
+          <div className="flex items-end gap-x-1">
+            <span className="shrink-0">เป็นผู้จัดซื้อและตรวจรับน้ำมันในครั้งนี้</span>
+          </div>
         </div>
 
         {/* แถว 3: เกจวัดน้ำมัน + ลงชื่อ 2 คอลัมน์ */}
