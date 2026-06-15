@@ -127,7 +127,7 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
       </table>
 
       {/* ลงนามผู้ขับ + รปภ. */}
-      <table className="w-full border border-black border-collapse">
+      <table className="w-full border border-black border-collapse mb-4">
         <thead>
           <tr>
             <th className="border border-black px-2 py-1 bg-gray-50 w-1/2">ผู้ขับรถ</th>
@@ -147,6 +147,110 @@ export default function PrintDocument({ request }: { request: VehicleRequest }) 
           </tr>
         </tbody>
       </table>
+
+      {/* ===== การขออนุมัติเบิกจ่ายน้ำมัน ===== */}
+      <div className="border border-black p-3">
+        <p className="text-center font-bold text-[12px] mb-2">การขออนุมัติเบิกจ่ายน้ำมัน</p>
+
+        {/* แถว 1: ประเภทน้ำมัน + จำนวน + เป็นเงิน */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2 text-[11px]">
+          <label className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 border border-black shrink-0" />
+            ดีเซล
+          </label>
+          <label className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 border border-black shrink-0" />
+            เบนซิน
+          </label>
+          <label className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 border border-black shrink-0" />
+            แก๊สโซฮอล์
+          </label>
+          <span>............</span>
+          <span className="ml-2">จำนวน</span>
+          <span className="border-b border-black inline-block w-[80px]" />
+          <span>ลิตร</span>
+          <span className="ml-2">เป็นเงิน</span>
+          <span className="border-b border-black inline-block w-[100px]" />
+          <span>บาท</span>
+        </div>
+
+        {/* แถว 2: มอบหมายให้ */}
+        <div className="flex flex-wrap items-center gap-x-1 mb-3 text-[11px]">
+          <span>และขอมอบหมายให้</span>
+          <span className="border-b border-black inline-block w-[120px]" />
+          <span>ตำแหน่ง</span>
+          <span className="border-b border-black inline-block w-[120px]" />
+          <span>เป็นผู้จัดซื้อและตรวจรับน้ำมันในครั้งนี้</span>
+        </div>
+
+        {/* แถว 3: เกจวัดน้ำมัน + ลงชื่อ 2 คอลัมน์ */}
+        <div className="flex items-start gap-4">
+          {/* เกจวัดน้ำมัน */}
+          <div className="shrink-0 flex flex-col items-center justify-center w-[90px]">
+            <svg viewBox="0 0 90 60" className="w-[90px] h-[60px]">
+              {/* ครึ่งวงกลม */}
+              <path d="M 10 50 A 35 35 0 0 1 80 50" fill="none" stroke="black" strokeWidth="2" />
+              {/* เส้นขีด F */}
+              <line x1="78" y1="50" x2="85" y2="50" stroke="black" strokeWidth="1.5" />
+              {/* เส้นขีด E */}
+              <line x1="12" y1="50" x2="5" y2="50" stroke="black" strokeWidth="1.5" />
+              {/* เส้นกลาง (ครึ่งถัง) */}
+              <line x1="45" y1="15" x2="45" y2="8" stroke="black" strokeWidth="1.5" />
+              {/* เข็ม */}
+              <line x1="45" y1="50" x2="45" y2="20" stroke="black" strokeWidth="1.5" />
+              {/* จุดกลาง */}
+              <circle cx="45" cy="50" r="3" fill="black" />
+              {/* ป้าย F */}
+              <text x="82" y="48" fontSize="7" fontWeight="bold" textAnchor="start">F</text>
+              <text x="82" y="56" fontSize="6" textAnchor="start">เต็มถัง</text>
+              {/* ป้าย E */}
+              <text x="1" y="48" fontSize="7" fontWeight="bold" textAnchor="start">E</text>
+              <text x="0" y="56" fontSize="6" textAnchor="start">หมดถัง</text>
+              {/* ป้าย ครึ่งถัง */}
+              <text x="38" y="7" fontSize="5" textAnchor="middle">ครึ่งถัง</text>
+            </svg>
+          </div>
+
+          {/* ลงชื่อ 2 คอลัมน์ */}
+          <div className="flex-1 grid grid-cols-2 gap-4 text-[11px]">
+            {/* ผู้ขออนุมัติ */}
+            <div>
+              <div className="flex items-end gap-1 mb-1">
+                <span>ชื่อ</span>
+                <span className="border-b border-black flex-1 inline-block" />
+                <span>ผู้ขออนุมัติ</span>
+              </div>
+              <div className="flex items-end gap-1 mb-1">
+                <span>(</span>
+                <span className="border-b border-black flex-1 inline-block" />
+                <span>)</span>
+              </div>
+              <div className="flex items-end gap-1">
+                <span>ตำแหน่ง</span>
+                <span className="border-b border-black flex-1 inline-block" />
+              </div>
+            </div>
+            {/* ผู้อนุมัติ */}
+            <div>
+              <div className="flex items-end gap-1 mb-1">
+                <span>ลงชื่อ</span>
+                <span className="border-b border-black flex-1 inline-block" />
+                <span>ผู้อนุมัติ</span>
+              </div>
+              <div className="flex items-end gap-1 mb-1">
+                <span>(</span>
+                <span className="border-b border-black flex-1 inline-block" />
+                <span>)</span>
+              </div>
+              <div className="flex items-end gap-1">
+                <span>ตำแหน่ง</span>
+                <span className="border-b border-black flex-1 inline-block" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

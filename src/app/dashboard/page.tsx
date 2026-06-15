@@ -34,6 +34,7 @@ export default function DashboardPage() {
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
   const [filterDept, setFilterDept] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,6 +71,7 @@ export default function DashboardPage() {
     return requests.filter(r => {
       if (filterName && !r.requester?.full_name?.toLowerCase().includes(filterName.toLowerCase())) return false;
       if (filterDept && r.requester?.department !== filterDept) return false;
+      if (filterStatus && r.status !== filterStatus) return false;
       if (filterDateFrom) {
         const dep = new Date(r.departure_datetime).toISOString().split("T")[0];
         if (dep < filterDateFrom) return false;
@@ -80,10 +82,10 @@ export default function DashboardPage() {
       }
       return true;
     });
-  }, [requests, filterName, filterDateFrom, filterDateTo, filterDept]);
+  }, [requests, filterName, filterDateFrom, filterDateTo, filterDept, filterStatus]);
 
   // Reset page เมื่อ filter เปลี่ยน
-  useEffect(() => { setCurrentPage(1); }, [filterName, filterDateFrom, filterDateTo, filterDept]);
+  useEffect(() => { setCurrentPage(1); }, [filterName, filterDateFrom, filterDateTo, filterDept, filterStatus]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const paginated = useMemo(() => {
@@ -161,7 +163,7 @@ export default function DashboardPage() {
 
         {/* Filter */}
         <div className="bg-white rounded-xl shadow p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label htmlFor="f_name" className="block text-xs font-medium text-gray-500 mb-1">ค้นหาชื่อผู้ขอ</label>
               <input id="f_name" type="text" value={filterName} onChange={e => setFilterName(e.target.value)}
@@ -186,11 +188,21 @@ export default function DashboardPage() {
                 {departments.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
+            <div>
+              <label htmlFor="f_status" className="block text-xs font-medium text-gray-500 mb-1">สถานะ</label>
+              <select id="f_status" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">ทั้งหมด</option>
+                {Object.entries(statusLabels).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          {(filterName || filterDateFrom || filterDateTo || filterDept) && (
+          {(filterName || filterDateFrom || filterDateTo || filterDept || filterStatus) && (
             <div className="mt-3 flex items-center gap-2">
               <span className="text-sm text-gray-500">แสดง {filtered.length} จาก {requests.length} รายการ</span>
-              <button onClick={() => { setFilterName(""); setFilterDateFrom(""); setFilterDateTo(""); setFilterDept(""); }}
+              <button onClick={() => { setFilterName(""); setFilterDateFrom(""); setFilterDateTo(""); setFilterDept(""); setFilterStatus(""); }}
                 className="text-sm text-blue-600 hover:underline">ล้างตัวกรอง</button>
             </div>
           )}
